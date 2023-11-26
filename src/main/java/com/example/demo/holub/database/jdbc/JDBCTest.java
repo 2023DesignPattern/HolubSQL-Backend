@@ -42,7 +42,7 @@ public class JDBCTest
 
 	public static void main(String[] args) throws Exception
 	{
-		Class.forName( "com.holub.database.jdbc.JDBCDriver" ) //{=JDBCTest.forName}
+		Class.forName( "com.example.demo.holub.database.jdbc.JDBCDriver" ) //{=JDBCTest.forName}
 												.newInstance();
 
 		Connection connection = null;
