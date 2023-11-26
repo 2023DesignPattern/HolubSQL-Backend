@@ -13,12 +13,15 @@ public class HolubRepository {
 
     public HolubRepository() {
         try {
-            database = new Database(new File("com/holub/database/Dbase"));
+            database = new Database(new File("src/main/java/com/holub/database/Dbase"));
         } catch (IOException e) {
-            throw new RuntimeException("DB ERROR");
+            throw new RuntimeException("DB CONNECTION ERROR");
         }
     }
 
+    /**
+     * Table을 가져오는 메소드
+     * */
     public Table getTable(String query){
         try {
             return database.execute(query);
