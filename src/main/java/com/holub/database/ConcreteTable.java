@@ -77,17 +77,22 @@ import com.holub.tools.ArrayIterator;
 	{	this.tableName   = tableName;
 		this.columnNames = (String[]) columnNames.clone();
 	}
+
+	public String[] getColumnNames(){
+		return columnNames;
+	}
+
 	/**********************************************************************
 	 * Return the index of the named column. Throw an
 	 * IndexOutOfBoundsException if the column doesn't exist.
 	 */
 	private int indexOf( String columnName )
 	{	for( int i = 0; i < columnNames.length; ++i )
-			if( columnNames[i].equals( columnName ) )
-					return i;
+		if( columnNames[i].equals( columnName ) )
+			return i;
 
 		throw new IndexOutOfBoundsException(
-					"Column ("+columnName+") doesn't exist in " + tableName );
+				"Column ("+columnName+") doesn't exist in " + tableName );
 	}
 	//@simple-construction-end
 	//
@@ -118,9 +123,9 @@ import com.holub.tools.ArrayIterator;
 	public void export( Table.Exporter exporter ) throws IOException
 	{	exporter.startTable();
 		exporter.storeMetadata( tableName,
-		                        columnNames.length,
-		                        rowSet.size(),
-								new ArrayIterator(columnNames) );
+				columnNames.length,
+				rowSet.size(),
+				new ArrayIterator(columnNames) );
 
 		for( Iterator i = rowSet.iterator(); i.hasNext(); )
 			exporter.storeRow( new ArrayIterator((Object[]) i.next()) );
@@ -149,8 +154,8 @@ import com.holub.tools.ArrayIterator;
 	//----------------------------------------------------------------------
 	public int insert( Collection intoTheseColumns, Collection values )
 	{	assert( intoTheseColumns.size() == values.size() )
-				:"There must be exactly one value for "
-					+"each specified column" ;
+			:"There must be exactly one value for "
+			+"each specified column" ;
 
 		Object[] newRow = new Object[ width() ];
 
@@ -210,9 +215,9 @@ import com.holub.tools.ArrayIterator;
 
 		public boolean advance()
 		{	if( rowIterator.hasNext() )
-			{	row = (Object[]) rowIterator.next();
-				return true;
-			}
+		{	row = (Object[]) rowIterator.next();
+			return true;
+		}
 			return false;
 		}
 
@@ -243,13 +248,13 @@ import com.holub.tools.ArrayIterator;
 		}
 
 		public Object update( String columnName, Object newValue )
-		{	
+		{
 			int index = indexOf(columnName);
 
 			// The following test is required for undo to work correctly.
 			if( row[index] == newValue )
 				throw new IllegalArgumentException(
-									"May not replace object with itself");
+						"May not replace object with itself");
 
 			Object oldValue = row[index];
 			row[index]		= newValue;
@@ -322,37 +327,37 @@ import com.holub.tools.ArrayIterator;
 	}
 	private void registerUpdate(Object[] row, int cell, Object oldContents)
 	{	if( !transactionStack.isEmpty() )
-			register( new UndoUpdate(row, cell, oldContents) );
+		register( new UndoUpdate(row, cell, oldContents) );
 	}
 	private void registerDelete( Object[] oldRow )
 	{	if( !transactionStack.isEmpty() )
-			register( new UndoDelete(oldRow) );
+		register( new UndoDelete(oldRow) );
 	}
 	private void registerInsert( Object[] newRow )
 	{	if( !transactionStack.isEmpty() )
-			register( new UndoInsert(newRow) );
+		register( new UndoInsert(newRow) );
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public void commit( boolean all ) throws IllegalStateException
 	{	if( transactionStack.isEmpty() )
-			throw new IllegalStateException("No BEGIN for COMMIT");
+		throw new IllegalStateException("No BEGIN for COMMIT");
 		do
-		{	LinkedList currentLevel = 
-							(LinkedList) transactionStack.removeLast();
+		{	LinkedList currentLevel =
+				(LinkedList) transactionStack.removeLast();
 
 			if( !transactionStack.isEmpty() )
 				((LinkedList)transactionStack.getLast())
-												.addAll(currentLevel);
+						.addAll(currentLevel);
 
 		} while( all && !transactionStack.isEmpty() );
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public void rollback( boolean all ) throws IllegalStateException
 	{	if( transactionStack.isEmpty() )
-			throw new IllegalStateException("No BEGIN for ROLLBACK");
+		throw new IllegalStateException("No BEGIN for ROLLBACK");
 		do
 		{	LinkedList currentLevel =
-							(LinkedList) transactionStack.removeLast();
+				(LinkedList) transactionStack.removeLast();
 
 			while( !currentLevel.isEmpty() )
 				((Undo) currentLevel.removeLast()).execute();
@@ -363,16 +368,16 @@ import com.holub.tools.ArrayIterator;
 	//@undo-end
 	//-----------------------------------------------------------------
 	public int  update( Selector where )
-	{	
+	{
 		Results  currentRow	= (Results)rows();
 		Cursor[] envelope 	= new Cursor[]{ currentRow };
 		int		 updated	= 0;
 
 		while( currentRow.advance() )
 		{	if( where.approve(envelope) )
-			{	where.modify(currentRow);
-				++updated;
-			}
+		{	where.modify(currentRow);
+			++updated;
+		}
 		}
 
 		return updated;
@@ -386,9 +391,9 @@ import com.holub.tools.ArrayIterator;
 
 		while( currentRow.advance() )
 		{	if( where.approve( envelope) )
-			{	currentRow.delete();
-				++deleted;
-			}
+		{	currentRow.delete();
+			++deleted;
+		}
 		}
 		return deleted;
 	}
@@ -396,38 +401,38 @@ import com.holub.tools.ArrayIterator;
 	//----------------------------------------------------------------------
 	public Table select( Selector where )
 	{	Table resultTable = new ConcreteTable( null,
-										(String[]) columnNames.clone() );
+			(String[]) columnNames.clone() );
 
 		Results		 	currentRow	= (Results) rows();
 		Cursor[] envelope	= new Cursor[]{ currentRow };
 
 		while( currentRow.advance() )
 		{	if( where.approve(envelope) )
-				resultTable.insert( (Object[]) currentRow.cloneRow() );
+			resultTable.insert( (Object[]) currentRow.cloneRow() );
 		}
 		return new UnmodifiableTable(resultTable);
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	public Table select(Selector where, String[] requestedColumns )
 	{	if( requestedColumns  == null )
-			return select( where );
+		return select( where );
 
 		Table resultTable = new ConcreteTable( null,
-									(String[]) requestedColumns.clone() );
+				(String[]) requestedColumns.clone() );
 
 		Results		 	currentRow	= (Results) rows();
 		Cursor[] envelope	= new Cursor[]{ currentRow };
 
 		while( currentRow.advance() )
 		{	if( where.approve(envelope) )
-			{	Object[] newRow = new Object[ requestedColumns.length ];
-				for( int column=0; column < requestedColumns.length;
-																++column )
-				{	newRow[column]=
-							currentRow.column(requestedColumns[column]);
-				}
-				resultTable.insert( newRow );
+		{	Object[] newRow = new Object[ requestedColumns.length ];
+			for( int column=0; column < requestedColumns.length;
+				 ++column )
+			{	newRow[column]=
+					currentRow.column(requestedColumns[column]);
 			}
+			resultTable.insert( newRow );
+		}
 		}
 		return new UnmodifiableTable(resultTable);
 	}
@@ -436,7 +441,7 @@ import com.holub.tools.ArrayIterator;
 	 * This version of select does a join
 	 */
 	public Table select( Selector where, String[]	requestedColumns, //{=ConcreteTable.select.default}
-										 Table[]	otherTables )
+						 Table[]	otherTables )
 	{
 		// If we're not doing a join, use the more efficient version
 		// of select().
@@ -451,6 +456,19 @@ import com.holub.tools.ArrayIterator;
 		allTables[0] = this;
 		System.arraycopy(otherTables, 0, allTables, 1, otherTables.length );
 
+		/**
+		 * [select * ] 쿼리문 동작
+		 * 모든 table의 모든 column명을 읽어와 set에 저장
+		 * 중복을 허용하지 않고 순서를 지키기 위하여 LinkedHashSet 사용
+		 * */
+		if(requestedColumns == null){
+			LinkedHashSet<String> set = new LinkedHashSet<>();
+			for(Table table : allTables){
+				set.addAll(Arrays.asList(((ConcreteTable) table).getColumnNames()));
+			}
+			requestedColumns = set.toArray(new String[0]);
+		}
+
 		// Create places to hold the result of the join and to hold
 		// iterators for each table involved in the join.
 
@@ -461,7 +479,7 @@ import com.holub.tools.ArrayIterator;
 		// resultTable all rows that the Selector approves
 
 		selectFromCartesianProduct( 0, where, requestedColumns,
-										allTables, envelope, resultTable );
+				allTables, envelope, resultTable );
 
 		return new UnmodifiableTable(resultTable);
 	}
@@ -490,12 +508,12 @@ import com.holub.tools.ArrayIterator;
 	 * recurses back down.
 	 */
 	private static void selectFromCartesianProduct(
-										int 			level,
-										Selector 		where,
-										String[] 		requestedColumns,
-										Table[] 		allTables,
-										Cursor[] allIterators,
-										Table 			resultTable )
+			int 			level,
+			Selector 		where,
+			String[] 		requestedColumns,
+			Table[] 		allTables,
+			Cursor[] allIterators,
+			Table 			resultTable )
 	{
 		allIterators[level] = allTables[level].rows();
 
@@ -505,8 +523,8 @@ import com.holub.tools.ArrayIterator;
 
 			if( level < allIterators.length - 1 )
 				selectFromCartesianProduct(level+1, where,
-									requestedColumns,
-									allTables, allIterators, resultTable);
+						requestedColumns,
+						allTables, allIterators, resultTable);
 
 			// If we are at the leaf level, then get approval for
 			// the fully-assembled row, and add the row to the table
@@ -514,8 +532,8 @@ import com.holub.tools.ArrayIterator;
 
 			if( level == allIterators.length - 1 )
 			{	if( where.approve(allIterators) )
-					insertApprovedRows( resultTable,
-									requestedColumns, allIterators );
+				insertApprovedRows( resultTable,
+						requestedColumns, allIterators );
 			}
 		}
 	}
@@ -543,19 +561,19 @@ import com.holub.tools.ArrayIterator;
 
 		for( int i = 0; i < requestedColumns.length; ++i )
 		{	for( int table = 0; table < allTables.length; ++table )
-			{	try
-				{	resultRow[i] = 
-						allTables[table].column(requestedColumns[i]);
-					break;	// if the assignment worked, do the next column
-				}
-				catch(Exception e)
-				{	// otherwise, try the next table
-				}
-			}
+		{	try
+		{	resultRow[i] =
+				allTables[table].column(requestedColumns[i]);
+			break;	// if the assignment worked, do the next column
+		}
+		catch(Exception e)
+		{	// otherwise, try the next table
+		}
+		}
 		}
 		resultTable.insert( /*requestedColumns,*/ resultRow );
 	}
-	
+
 	/**
 	 * A collection variant on the array version. Just converts the collection
 	 * to an array and then chains to the other version
@@ -569,7 +587,7 @@ import com.holub.tools.ArrayIterator;
 	 * 			collection do not implement the {@link Table} interface.
 	 */
 	public Table select(Selector where, Collection requestedColumns,
-															Collection other)
+						Collection other)
 	{
 		String[] columnNames = null;
 		Table[]	 otherTables = null;
@@ -645,10 +663,10 @@ import com.holub.tools.ArrayIterator;
 		}
 
 		Table people  = TableFactory.create(
-			"people",  new String[]{"last", "first", "addrId" } );
+				"people",  new String[]{"last", "first", "addrId" } );
 
 		Table address = TableFactory.create(
-			"address", new String[]{"addrId","street","city","state","zip"});
+				"address", new String[]{"addrId","street","city","state","zip"});
 
 		public void report( Throwable t, String message )
 		{	System.out.println( message + " FAILED with exception toss" );
@@ -670,10 +688,10 @@ import com.holub.tools.ArrayIterator;
 		{	people.insert(new Object[]{"Holub",	    "Allen","1" 		});
 			people.insert(new Object[]{"Flintstone","Wilma","2"		 	});
 			people.insert(new String[]{"addrId",	"first","last" 	 	},
-						  new Object[]{"2",		    "Fred", "Flintstone"});
+					new Object[]{"2",		    "Fred", "Flintstone"});
 
-			address.insert( new Object[]{"1","123 MyStreet", 
-												"Berkeley","CA","99999" } );
+			address.insert( new Object[]{"1","123 MyStreet",
+					"Berkeley","CA","99999" } );
 
 			List l = new ArrayList();
 			l.add("2");
@@ -704,14 +722,14 @@ import com.holub.tools.ArrayIterator;
 			try
 			{	people.insert( new Object[]{ "x" } );
 				throw new AssertionError(
-							"insert wrong number of fields test failed");
+						"insert wrong number of fields test failed");
 			}
 			catch(Throwable t){ /* Failed correctly, do nothing */ }
 
 			try
 			{	people.insert( new String[]{ "?" }, new Object[]{ "y" });
 				throw new AssertionError(
-								"insert-nonexistent-field test failed");
+						"insert-nonexistent-field test failed");
 			}
 			catch(Exception t){ /* Failed correctly, do nothing */ }
 		}
@@ -719,15 +737,15 @@ import com.holub.tools.ArrayIterator;
 		public void testUpdate()
 		{	System.out.println("update set state='YY' where state='XX'" );
 			int updated = address.update
-			(	new Selector()
-				{	public boolean approve( Cursor[] tables )
-					{	return tables[0].column("state").equals("XX");
-					}
-					public void modify( Cursor current )
-					{	current.update("state", "YY");
-					}
-				}
-			);
+					(	new Selector()
+						 {	public boolean approve( Cursor[] tables )
+						 {	return tables[0].column("state").equals("XX");
+						 }
+							 public void modify( Cursor current )
+							 {	current.update("state", "YY");
+							 }
+						 }
+					);
 			print( address );
 			System.out.println( updated + " rows affected\n" );
 		}
@@ -736,13 +754,13 @@ import com.holub.tools.ArrayIterator;
 		{
 			System.out.println("delete where street='Bogus'" );
 			int deleted =
-			address.delete
-			(	new Selector.Adapter()
-				{	public boolean approve( Cursor[] tables )
-					{	return tables[0].column("street").equals("Bogus");
-					}
-				}
-			);
+					address.delete
+							(	new Selector.Adapter()
+								 {	public boolean approve( Cursor[] tables )
+								 {	return tables[0].column("street").equals("Bogus");
+								 }
+								 }
+							);
 			print( address );
 			System.out.println( deleted + " rows affected\n" );
 		}
@@ -751,8 +769,8 @@ import com.holub.tools.ArrayIterator;
 		{	Selector flintstoneSelector =
 				new Selector.Adapter()
 				{	public boolean approve( Cursor[] tables )
-					{ return tables[0].column("last").equals("Flintstone");
-					}
+				{ return tables[0].column("last").equals("Flintstone");
+				}
 				};
 
 			// SELECT first, last FROM people WHERE last = "Flintstone"
@@ -775,21 +793,21 @@ import com.holub.tools.ArrayIterator;
 			try
 			{	result.insert( new Object[]{ "x", "y", "z" } );
 				throw new AssertionError(
-								"Insert to Immutable Table test failed");
+						"Insert to Immutable Table test failed");
 			}
 			catch( Exception e ){ /*it failed correctly*/ }
 
 			try
 			{	result.update( flintstoneSelector );
 				throw new AssertionError(
-								"Update of Immutable Table test failed");
+						"Update of Immutable Table test failed");
 			}
 			catch( Exception e ){ /*it failed correctly*/ }
 
 			try
 			{	result.delete( flintstoneSelector );
 				throw new AssertionError(
-								"Delete of Immutable Table test failed");
+						"Delete of Immutable Table test failed");
 			}
 			catch( Exception e ){ /*it failed correctly*/ }
 		}
@@ -813,10 +831,10 @@ import com.holub.tools.ArrayIterator;
 			// First test a two-way join
 
 			System.out.println("\nSELECT first,last,street,city,state,zip"
-								+" FROM people, address"
-								+" WHERE people.addrId = address.addrId");
+					+" FROM people, address"
+					+" WHERE people.addrId = address.addrId");
 
-		 	// Collection version chains to String[] version,
+			// Collection version chains to String[] version,
 			// so this code tests both:
 			List columns = new ArrayList();
 			columns.add("first");
@@ -830,50 +848,50 @@ import com.holub.tools.ArrayIterator;
 			tables.add( address );
 
 			Table result=	// WHERE people.addrID = address.addrID
-				people.select
-				(	new Selector.Adapter()
-					{	public boolean approve( Cursor[] tables )
-						{	return 		 tables[0].column("addrId")
-								.equals( tables[1].column("addrId") );
-						}
-					},
-					columns,
-					tables
-				);
+					people.select
+							(	new Selector.Adapter()
+								 {	public boolean approve( Cursor[] tables )
+								 {	return 		 tables[0].column("addrId")
+										 .equals( tables[1].column("addrId") );
+								 }
+								 },
+									columns,
+									tables
+							);
 
 			print( result );
-		 	System.out.println("");
+			System.out.println("");
 
 			// Now test a three-way join
 			//
 			System.out.println(
 					"\nSELECT first,last,street,city,state,zip,text"
-					+" FROM people, address, third"
-					+" WHERE (people.addrId = address.addrId)"
-					+" AND (people.addrId = third.addrId)");
+							+" FROM people, address, third"
+							+" WHERE (people.addrId = address.addrId)"
+							+" AND (people.addrId = third.addrId)");
 
 			Table third = TableFactory.create(
-								"third", new String[]{"addrId","text"} );
+					"third", new String[]{"addrId","text"} );
 			third.insert ( new Object[]{ "1", "addrId=1" } );
 			third.insert ( new Object[]{ "2", "addrId=2" } );
 
 			result=
-			people.select
-		  	( new Selector.Adapter()
-			  {	public boolean approve( Cursor[] tables )
-				{ return
-				  (tables[0].column("addrId")
-				   				.equals(tables[1].column("addrId"))
-				   &&
-				   tables[0].column("addrId")
-				   				.equals(tables[2].column("addrId"))
-				  );
-				}
-			  },
+					people.select
+							( new Selector.Adapter()
+							  {	public boolean approve( Cursor[] tables )
+							  { return
+									  (tables[0].column("addrId")
+											  .equals(tables[1].column("addrId"))
+											  &&
+											  tables[0].column("addrId")
+													  .equals(tables[2].column("addrId"))
+									  );
+							  }
+							  },
 
-			  new String[]{"last", "first", "state", "text"},
-			  new Table[]{ address, third }
-			);
+									new String[]{"last", "first", "state", "text"},
+									new Table[]{ address, third }
+							);
 
 			System.out.println( result.toString() + "\n" );
 		}
@@ -883,7 +901,7 @@ import com.holub.tools.ArrayIterator;
 			// Verify that commit works properly
 			people.begin();
 			System.out.println(
-							"begin/insert into people (Solo, Han, 5)");
+					"begin/insert into people (Solo, Han, 5)");
 
 			people.insert( new Object[]{ "Solo", "Han", "5" } );
 			System.out.println( people.toString() );
@@ -896,9 +914,9 @@ import com.holub.tools.ArrayIterator;
 			System.out.println( people.toString() );
 
 			System.out.println(  "commit(THIS_LEVEL)\n"
-								+"rollback(Table.THIS_LEVEL)\n");
-			people.commit		(THIS_LEVEL);
-			people.rollback		(THIS_LEVEL);
+					+"rollback(Table.THIS_LEVEL)\n");
+			people.commit		(Table.THIS_LEVEL);
+			people.rollback		(Table.THIS_LEVEL);
 			System.out.println	( people.toString() );
 
 			// Now test that nested transactions work correctly.
@@ -911,38 +929,38 @@ import com.holub.tools.ArrayIterator;
 			System.out.println( people.toString() );
 
 			System.out.println(
-				"begin/update people set last=Skywalker where last=Vader");
+					"begin/update people set last=Skywalker where last=Vader");
 
 			people.begin();
 			people.update
-			(	new Selector()
-				{	public boolean approve( Cursor[] tables )
-					{	return tables[0].column("last").equals("Vader");
-					}
-					public void modify(Cursor current)
-					{	current.update( "last", "Skywalker" );
-					}
-				}
-			);
+					(	new Selector()
+						 {	public boolean approve( Cursor[] tables )
+						 {	return tables[0].column("last").equals("Vader");
+						 }
+							 public void modify(Cursor current)
+							 {	current.update( "last", "Skywalker" );
+							 }
+						 }
+					);
 			System.out.println( people.toString() );
 
 			System.out.println("delete from people where last=Skywalker");
 			people.delete
-			(	new Selector.Adapter()
-				{	public boolean approve( Cursor[] tables )
-					{ return tables[0].column("last").equals("Skywalker");
-					}
-				}
-			);
+					(	new Selector.Adapter()
+						 {	public boolean approve( Cursor[] tables )
+						 { return tables[0].column("last").equals("Skywalker");
+						 }
+						 }
+					);
 			System.out.println( people.toString() );
 
 			System.out.println(
-						"rollback(Table.THIS_LEVEL) the delete and update");
-			people.rollback(THIS_LEVEL);
+					"rollback(Table.THIS_LEVEL) the delete and update");
+			people.rollback(Table.THIS_LEVEL);
 			System.out.println( people.toString() );
 
 			System.out.println("rollback(Table.THIS_LEVEL) insert");
-			people.rollback(THIS_LEVEL);
+			people.rollback(Table.THIS_LEVEL);
 			System.out.println( people.toString() );
 		}
 
@@ -951,7 +969,7 @@ import com.holub.tools.ArrayIterator;
 			Cursor current = t.rows();
 			while( current.advance() )
 			{	for(Iterator columns = current.columns();columns.hasNext();)
-					System.out.print( (String) columns.next() + " " );
+				System.out.print( (String) columns.next() + " " );
 				System.out.println("");
 			}
 		}
