@@ -29,8 +29,8 @@ package com.example.demo.holub.database.jdbc;
 import java.sql.*;
 import java.io.*;
 
-import com.holub.database.*;
-import com.holub.database.jdbc.adapters.*;
+import com.example.demo.holub.database.*;
+import com.example.demo.holub.database.jdbc.adapters.*;
  
 /***
  * @include /etc/license.txt

@@ -26,7 +26,7 @@
  */
 package com.example.demo.holub.database;
 
-import com.holub.tools.ArrayIterator;
+import com.example.demo.holub.tools.ArrayIterator;
 
 import java.io.*;
 import java.util.*;

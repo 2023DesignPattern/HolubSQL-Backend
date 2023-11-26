@@ -31,11 +31,11 @@ import java.io.*;
 import java.text.NumberFormat;
 import java.net.URI;
 
-import com.holub.text.Token;
-import com.holub.text.TokenSet;
-import com.holub.text.Scanner;
-import com.holub.text.ParseFailure;
-import com.holub.tools.ThrowableContainer;
+import com.example.demo.holub.text.Token;
+import com.example.demo.holub.text.TokenSet;
+import com.example.demo.holub.text.Scanner;
+import com.example.demo.holub.text.ParseFailure;
+import com.example.demo.holub.tools.ThrowableContainer;
 
 /***
  *  This class implements a small SQL-subset database.

@@ -29,8 +29,10 @@ package com.example.demo.holub.database.jdbc;
 import java.sql.*;
 import java.util.*;
 
-import com.holub.database.*;
-import com.holub.database.jdbc.adapters.*;
+import com.example.demo.holub.database.Cursor;
+import com.example.demo.holub.database.jdbc.adapters.ResultSetMetaDataAdapter;
+import com.example.demo.holub.database.*;
+import com.example.demo.holub.database.jdbc.adapters.*;
 
 /** A limited version of the result-set metadata class. All methods
  *  not shown throw a {@link SQLException} if called.

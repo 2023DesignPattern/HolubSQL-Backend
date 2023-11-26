@@ -31,9 +31,9 @@ import java.net.*;
 import java.util.*;
 import java.sql.*;
 
-import com.holub.database.*;
-import com.holub.database.jdbc.adapters.*;
-import com.holub.text.ParseFailure;
+import com.example.demo.holub.database.*;
+import com.example.demo.holub.database.jdbc.adapters.*;
+import com.example.demo.holub.text.ParseFailure;
 
 /** A limited version of the Connection class. All methods
  *  undocumented base-class overrides throw a
