@@ -26,10 +26,6 @@ public class XMLExporterTest {
     @DisplayName("테스트를 위한 더미데이터 세팅")
     private void setDummyDate() {
         try{
-            people.insert(new Object[]{"Holub", "Allen", 1});
-            people.insert(new Object[]{"Flintstone", "Wilma", 2});
-            people.insert(new Object[]{"Flintstone", "Fred", 2});
-
             address.insert(new Object[]{1, "123 MyStreet", "Berkeley", "CA", 99999});
             address.insert(new Object[]{2, "123 Quarry Ln.", "Bedrock", "XX", 12345});
             address.insert(new Object[]{3, "Bogus", "Bad", "XX", 12345});
