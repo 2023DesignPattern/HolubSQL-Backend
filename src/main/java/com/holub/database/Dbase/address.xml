@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<address>
+    <row>
+        <addrId>1</addrId>
+        <street>123 MyStreet</street>
+        <city>Berkeley</city>
+        <state>CA</state>
+        <zip>99999</zip>
+    </row>
+    <row>
+        <addrId>2</addrId>
+        <street>123 Quarry Ln.</street>
+        <city>Bedrock</city>
+        <state>XX</state>
+        <zip>12345</zip>
+    </row>
+    <row>
+        <addrId>3</addrId>
+        <street>Bogus</street>
+        <city>Bad</city>
+        <state>XX</state>
+        <zip>12345</zip>
+    </row>
+</address>
