@@ -20,4 +20,8 @@ public class MusicService {
     public List<Music> getPopularMusicList() {
         return musicRepository.getPopularMusicList();
     }
+
+    public List<Music> searchMusic(String type, String q) {
+        return musicRepository.searchMusic(type, q);
+    }
 }

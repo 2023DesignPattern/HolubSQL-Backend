@@ -55,4 +55,28 @@ public class MusicRepository {
                 .sorted(Comparator.comparingLong(Music::getHits).reversed())
                 .collect(Collectors.toList());
     }
+
+    public List<Music> searchMusic(String type, String q) {
+        Table musicTable = null;
+
+        if(type.equals("title")) {
+            musicTable = holubRepository.getTable("select * from music where title = '" + q + "'");
+        }
+        else {
+            musicTable = holubRepository.getTable("select * from music where id = " + q);
+        }
+
+        UnmodifiableTable unmodifiableTable = (UnmodifiableTable) musicTable;
+        ConcreteTable concreteTable = (ConcreteTable) (unmodifiableTable.extract());
+        List<Object[]> rowSet = new LinkedList<>(concreteTable.getRowSet());
+        return rowSet.stream()
+                .map(rowData -> Music.builder()
+                        .id(Long.valueOf(rowData[0].toString()))
+                        .title(rowData[1].toString())
+                        .singer(rowData[2].toString())
+                        .hits(Long.valueOf(rowData[3].toString()))
+                        .type(rowData[4].toString())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

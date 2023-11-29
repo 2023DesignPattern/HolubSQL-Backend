@@ -29,7 +29,8 @@ public class MusicController {
     }
 
     @GetMapping("{type}")
-    public ResponseEntity<?> searchMusic(@PathVariable("type") String type) {
-        return null;
+    public ResponseEntity<?> searchMusic(@PathVariable("type") String type, @RequestParam("q") String q) {
+        List<Music> musicList = musicService.searchMusic(type, q);
+        return new ResponseEntity<>(musicList, HttpStatus.OK);
     }
 }
