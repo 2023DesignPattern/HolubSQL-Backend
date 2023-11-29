@@ -5,9 +5,7 @@ import com.music.service.MusicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,9 +17,20 @@ public class MusicController {
     private final MusicService musicService;
 
     @GetMapping("")
-    //TODO : ResponseEntity 반환형 DTO로 고치기
-    public ResponseEntity<?> getMusicList() {
-        List<Music> musicList = musicService.getMusicList();
+    public ResponseEntity<?> getCurrentMusicList() {
+        List<Music> musicList = musicService.getCurrentMusicList();
+        return new ResponseEntity<>(musicList, HttpStatus.OK);
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<?> getPopularMusicList() {
+        List<Music> musicList = musicService.getPopularMusicList();
+        return new ResponseEntity<>(musicList, HttpStatus.OK);
+    }
+
+    @GetMapping("{type}")
+    public ResponseEntity<?> searchMusic(@PathVariable("type") String type, @RequestParam("q") String q) {
+        List<Music> musicList = musicService.searchMusic(type, q);
         return new ResponseEntity<>(musicList, HttpStatus.OK);
     }
 }

@@ -13,7 +13,15 @@ public class MusicService {
 
     private final MusicRepository musicRepository;
 
-    public List<Music> getMusicList() {
-        return musicRepository.getMusicList();
+    public List<Music> getCurrentMusicList() {
+        return musicRepository.getCurrentMusicList();
+    }
+
+    public List<Music> getPopularMusicList() {
+        return musicRepository.getPopularMusicList();
+    }
+
+    public List<Music> searchMusic(String type, String q) {
+        return musicRepository.searchMusic(type, q);
     }
 }
