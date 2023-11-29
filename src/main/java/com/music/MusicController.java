@@ -18,13 +18,13 @@ public class MusicController {
 
     @GetMapping("")
     public ResponseEntity<?> getCurrentMusicList() {
-        List<Music> musicList = musicService.getMusicList();
+        List<Music> musicList = musicService.getCurrentMusicList();
         return new ResponseEntity<>(musicList, HttpStatus.OK);
     }
 
     @GetMapping("/popular")
     public ResponseEntity<?> getPopularMusicList() {
-        List<Music> musicList = musicService.getMusicList();
+        List<Music> musicList = musicService.getPopularMusicList();
         return new ResponseEntity<>(musicList, HttpStatus.OK);
     }
 

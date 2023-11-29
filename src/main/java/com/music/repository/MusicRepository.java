@@ -7,6 +7,7 @@ import com.holub.database.UnmodifiableTable;
 import com.music.entity.Music;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,12 +16,12 @@ import java.util.stream.Collectors;
 public class MusicRepository {
     HolubRepository holubRepository = new HolubRepository();
 
-    public List<Music> getMusicList() {
+    public List<Music> getCurrentMusicList() {
         Table musicTable = holubRepository.getTable("select * from music");
         UnmodifiableTable unmodifiableTable = (UnmodifiableTable) musicTable;
         ConcreteTable concreteTable = (ConcreteTable) (unmodifiableTable.extract());
         List<Object[]> rowSet = new LinkedList<>(concreteTable.getRowSet());
-        return rowSet.stream()
+        List<Music> currentMusicList = rowSet.stream()
                 .map(rowData -> Music.builder()
                         .id(Long.valueOf(rowData[0].toString()))
                         .title(rowData[1].toString())
@@ -28,6 +29,30 @@ public class MusicRepository {
                         .hits(Long.valueOf(rowData[3].toString()))
                         .type(rowData[4].toString())
                         .build())
+                .collect(Collectors.toList());
+
+        return  currentMusicList.stream()
+                .sorted(Comparator.comparingLong(Music::getId).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Music> getPopularMusicList() {
+        Table musicTable = holubRepository.getTable("select * from music");
+        UnmodifiableTable unmodifiableTable = (UnmodifiableTable) musicTable;
+        ConcreteTable concreteTable = (ConcreteTable) (unmodifiableTable.extract());
+        List<Object[]> rowSet = new LinkedList<>(concreteTable.getRowSet());
+        List<Music> currentMusicList = rowSet.stream()
+                .map(rowData -> Music.builder()
+                        .id(Long.valueOf(rowData[0].toString()))
+                        .title(rowData[1].toString())
+                        .singer(rowData[2].toString())
+                        .hits(Long.valueOf(rowData[3].toString()))
+                        .type(rowData[4].toString())
+                        .build())
+                .collect(Collectors.toList());
+
+        return  currentMusicList.stream()
+                .sorted(Comparator.comparingLong(Music::getHits).reversed())
                 .collect(Collectors.toList());
     }
 }
