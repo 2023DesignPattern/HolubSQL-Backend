@@ -15,18 +15,6 @@ import java.util.List;
 
 public class XMLImporter implements Table.Importer {
 
-//    private String tableName = "anonymous";
-//    private final ArrayList<String> columnNames = new ArrayList<>();
-//    private final BufferedReader reader;
-//
-//    public XMLImporter(Reader reader){
-//        if(reader instanceof BufferedReader){
-//            this.reader = (BufferedReader) reader;
-//        } else{
-//            this.reader = new BufferedReader(reader);
-//        }
-//    }
-
     private String tableName;
     private Iterator columnNames;
     private List<String> currentRow;
@@ -35,20 +23,12 @@ public class XMLImporter implements Table.Importer {
     private Reader reader;
     private Element rootElement;
 
-    private String xmlContent;
-
     public XMLImporter(Reader reader){
-//        try {
-//            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder builder = factory.newDocumentBuilder();
-//            document = builder.parse(inputStream);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Error initializing XmlImporter", e);
-//        }
         this.reader = reader;
     }
 
-    private void initialize() {
+    @Override
+    public void startTable() throws IOException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -65,41 +45,6 @@ public class XMLImporter implements Table.Importer {
     }
 
     @Override
-    public void startTable() throws IOException {
-
-        /**
-        // xml 헤더 버림
-        reader.readLine();
-
-        // Table명 파싱
-        String line = reader.readLine();
-        int startIndex = line.indexOf('<') + 1;
-        int endIndex = line.indexOf('>');
-        tableName = line.substring(startIndex, endIndex);
-         */
-
-//        try {
-//            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder builder = factory.newDocumentBuilder();
-//            Document document = builder.parse(new InputSource(reader));
-//
-//            this.rootElement = document.getDocumentElement();
-//            tableName = this.rootElement.getNodeName();
-//
-//            columnNames = (List<String>) loadColumnNames();
-//            columnNames = List.of(new String[]{"1"});
-//            currentRow = new ArrayList<>();
-//            rowIndex = 0;
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException("Error initializing XmlImporter", e);
-//        }
-
-        initialize();
-
-    }
-
-    @Override
     public String loadTableName() throws IOException {
         return tableName;
     }
@@ -107,10 +52,11 @@ public class XMLImporter implements Table.Importer {
     @Override
     public int loadWidth() throws IOException {
         int size = 0;
-        while(columnNames.hasNext()){
-            size++;
+        while(columnNames.hasNext()) {
+            size+=1;
+            columnNames.next();
         }
-        return new ArrayList<>(columnNames).size();
+        return size;
     }
 
     @Override
@@ -133,6 +79,7 @@ public class XMLImporter implements Table.Importer {
     @Override
     public Iterator loadRow() throws IOException {
         Element rowElement = getNextRowElement();
+        currentRow = new ArrayList<>();
         if (rowElement != null) {
             NodeList valueElements = rowElement.getChildNodes();
             for (int i = 0; i < valueElements.getLength(); i++) {
@@ -159,5 +106,13 @@ public class XMLImporter implements Table.Importer {
             return (Element) rowElements.item(rowIndex++);
         }
         return null;
+    }
+
+    public void getPrevRowIndex() {
+        rowIndex-=1;
+    }
+
+    public void getNextRowIndex() {
+        rowIndex+=1;
     }
 }
