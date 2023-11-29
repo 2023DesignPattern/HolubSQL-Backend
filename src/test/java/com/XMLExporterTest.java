@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class XMLExporterTest {
 
-    Table people = TableFactory.create("name", new String[] { "last", "first", "addrId" });
     Table address = TableFactory.create("address", new String[] { "addrId", "street", "city", "state", "zip" });
     StringWriter writer = new StringWriter();
     Database database;
